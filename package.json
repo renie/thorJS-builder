@@ -1,5 +1,5 @@
 {
-  "name": "grunt-thorJS-builder",
+  "name": "grunt-thorjs-builder",
   "description": "Grunt plugin for building ThorJS",
   "version": "0.1.0",
   "homepage": "https://github.com/renie/thorJS-builder",
