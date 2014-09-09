@@ -1,0 +1,14 @@
+{
+	"browser": true,
+	"globals": {
+	},
+	"globalstrict": false,
+	"quotmark": "single",
+	"trailing": true,
+	"undef": true,
+	"unused": true,
+	"maxparams": 3,
+	"noarg": false,
+	"indent": 5,
+	"latedef": true
+}
