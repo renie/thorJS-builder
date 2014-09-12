@@ -13,12 +13,12 @@ module.exports = function (grunt) {
 	grunt.registerMultiTask('thorJS_builder', 'Grunt plugin for building ThorJS', function () {
 		// Merge task-specific and/or target-specific options with these defaults.
 		var options = this.options({
-			finalPath:'/home/renie/teste.txt'
+			finalPath   : 'foo.txt',
+			libName     : 'Thor'
 		});
 
 		// Iterate over all specified file groups.
 		this.files.forEach(function (f) {
-
 
 			var map = {};
 
@@ -31,7 +31,7 @@ module.exports = function (grunt) {
 				}
 			}).map(function (filepath) {
 				var source =  grunt.file.read(filepath);
-				var regex = /(\w+)\.prototype\.(\w+)=function\((\w*)\)/g;
+				var regex = /(\w+)\.prototype\.(\w+)=function\(([a-zA-Z0-9,_]*)?\)/g;
 				var final = "";
 				var myArray;
 				while ((myArray = regex.exec(source)) !== null) {
@@ -52,6 +52,9 @@ module.exports = function (grunt) {
 					if (!map.hasOwnProperty(part))
 						map[part] = [];
 
+
+					myArray[3] = myArray[3] || '';
+
 					map[part].push({
 						'name' : myArray[2],
 						'parameters' : myArray[3].replace(/\s/g, '').split(','),
@@ -61,10 +64,10 @@ module.exports = function (grunt) {
 				}
 			});
 
-			var standalone = 'var Thor={};';
+			var standalone = 'var ' + options.libName + '={};';
 
 			for (var part in map) {
-				standalone += 'Thor.' + part + '={';
+				standalone += options.libName + '.' + part + '={';
 
 				var i = 0,
 					functions = map[part],
@@ -72,14 +75,14 @@ module.exports = function (grunt) {
 				for (; i < len ; i++) {
 					var curr = functions[i];
 					standalone += "'" + curr.name + "':function(";
-					standalone += "thorobj";
+					standalone += "libobj";
 
 					if (curr.parameters.length > 0 &&
 						curr.parameters[0].replace(/\s/g, '') !== '')
 						standalone +=  ',';
 
 					standalone += curr.parameters.join(',') + "){";
-					standalone += curr.body.replace(/this/g, 'thorobj');
+					standalone += curr.body.replace(/this/g, 'libobj');
 					standalone += ";}";
 
 					if (i + 1 < len)
@@ -89,9 +92,8 @@ module.exports = function (grunt) {
 				standalone += '};';
 			}
 
-
 			// Write the destination file.
-			grunt.file.write(options.finalPath + 'thor.standalone.js', standalone);
+			grunt.file.write(options.finalPath + options.libName.toLocaleLowerCase() +'.standalone.js', standalone);
 
 			// Print a success message.
 			grunt.log.writeln('File "' + options.finalPath + '" created.');

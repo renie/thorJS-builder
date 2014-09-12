@@ -1,7 +1,7 @@
 {
   "name": "grunt-thorjs-builder",
   "description": "Grunt plugin for building ThorJS",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "homepage": "https://github.com/renie/thorJS-builder",
   "author": {
     "name": "Renie Siqueira",
